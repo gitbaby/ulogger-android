@@ -58,7 +58,7 @@ public class LoggerService extends Service {
     public static final String BROADCAST_LOCATION_UPDATED = "net.fabiszewski.ulogger.broadcast.location_updated";
 
     private Intent syncIntent = null;
-    private long exportMs = 24L * 3600000L;
+    private long exportMs = 12L * 3600000L;
     private static volatile boolean isRunning = false;
     private HandlerThread thread;
     private Looper looper;
@@ -104,7 +104,7 @@ public class LoggerService extends Service {
             if (!TextUtils.isEmpty(exportUri)) {
                 syncIntent = new Intent(context, GpxExportService.class);
                 syncIntent.setData(Uri.parse(exportUri));
-                final String exportHours = preferences.getString(SettingsActivity.KEY_EXPORT_HOURS, "24");
+                final String exportHours = preferences.getString(SettingsActivity.KEY_EXPORT_HOURS, "12");
                 exportMs = Long.parseLong(exportHours) * 3600000L;
             }
 
