@@ -31,6 +31,34 @@
             android:showDividers="middle">
 
             <Button
+                android:id="@+id/buttonWaypoint"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_background"
+                android:drawableTop="@drawable/ic_add_location_white_24dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/waypoint"
+                android:textColor="?android:attr/textColorAlertDialogListItem"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/buttonUpload"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_background"
+                android:drawableTop="@drawable/ic_cloud_upload_white_24dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/button_upload"
+                android:textColor="?android:attr/textColorAlertDialogListItem"
+                android:textStyle="bold" />
+
+            <Button
                 android:id="@+id/buttonNewTrack"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
@@ -48,7 +76,7 @@
 
         <net.fabiszewski.ulogger.SwipeSwitch
             android:id="@+id/switchLogger"
-            android:layout_width="355dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="false"
             android:paddingTop="30dp"

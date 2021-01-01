@@ -49,14 +49,14 @@
             android:entries="@array/providersEntries"
             android:entryValues="@array/providersValues"
             app:useSimpleSummaryProvider="true" />
-        <SwitchPreferenceCompat
+        <!--SwitchPreferenceCompat
             android:key="prefLiveSync"
             android:title="@string/pref_livesync_title"
             android:summary="@string/pref_livesync_summary"
-            android:defaultValue="@string/pref_livesync_default" />
+            android:defaultValue="@string/pref_livesync_default" /-->
     </PreferenceCategory>
 
-    <PreferenceCategory
+    <!--PreferenceCategory
         android:title="@string/pref_cat_server"
         android:icon="@drawable/ic_cloud_upload_blue_24dp">
         <net.fabiszewski.ulogger.TrimmedEditTextPreference
@@ -83,7 +83,7 @@
             android:defaultValue="@string/pref_imagesize_default"
             ulogger:otherSummary="@string/pref_imagesize_other"
             app:useSimpleSummaryProvider="true" />
-    </PreferenceCategory>
+    </PreferenceCategory-->
 
     <PreferenceCategory
         android:title="@string/pref_cat_other"
@@ -115,6 +115,20 @@
             android:dialogMessage="@string/pref_auto_name_summary"
             android:defaultValue="@string/pref_auto_name_default"
             app:useSimpleSummaryProvider="true" />
+
+        <net.fabiszewski.ulogger.FilePreference
+            android:key="prefExportFile"
+            android:title="@string/pref_export_file_title"
+            app:useSimpleSummaryProvider="true"
+            />
+
+        <net.fabiszewski.ulogger.TrimmedEditTextPreference
+            android:key="prefExportHours"
+            android:title="@string/pref_export_hours_title"
+            android:dialogMessage="@string/pref_export_hours_summary"
+            android:defaultValue="@string/pref_export_hours_default"
+            app:useSimpleSummaryProvider="true"
+            />
     </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

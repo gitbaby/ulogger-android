@@ -9,8 +9,12 @@
 
 package net.fabiszewski.ulogger;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,11 +26,13 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.TwoStatePreference;
 
+import static net.fabiszewski.ulogger.GpxExportService.GPX_MIME;
 import static net.fabiszewski.ulogger.SettingsActivity.*;
 
 @SuppressWarnings("WeakerAccess")
 public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String TAG = SettingsFragment.class.getSimpleName();
+    private static final int RESULT_EXPORT_FILE = 1;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -65,6 +71,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         final Preference prefUsername = findPreference(KEY_USERNAME);
         final Preference prefPass = findPreference(KEY_PASS);
         final Preference prefHost = findPreference(KEY_HOST);
+        final Preference prefExportFile = findPreference(KEY_EXPORT_FILE);
         // on change listeners
         if (prefLiveSync != null) {
             prefLiveSync.setOnPreferenceChangeListener(liveSyncChanged);
@@ -84,6 +91,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
         if (prefHost != null) {
             prefHost.setOnPreferenceClickListener(serverSetupClicked);
+        }
+        if (prefExportFile != null) {
+            prefExportFile.setOnPreferenceClickListener(exportFileClicked);
         }
     }
 
@@ -164,4 +174,36 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 && (user != null && !user.isEmpty())
                 && (pass != null && !pass.isEmpty()));
     }
+
+    /**
+     * On click listener to select GPX export file
+     */
+    private final Preference.OnPreferenceClickListener exportFileClicked = preference -> {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType(GPX_MIME);
+        try {
+            startActivityForResult(intent, RESULT_EXPORT_FILE);
+        } catch (ActivityNotFoundException e) {
+            final Context context = preference.getContext();
+            Toast.makeText(context, R.string.cannot_open_picker, Toast.LENGTH_LONG).show();
+        }
+        return true;
+    };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_EXPORT_FILE && resultCode == Activity.RESULT_OK) {
+            Context context = getActivity().getApplicationContext();
+            Uri uri = data.getData();
+            final int takeFlags = data.getFlags()
+                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            context.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            preferences.edit().putString(KEY_EXPORT_FILE, uri.toString()).apply();
+        }
+    }
+
 }

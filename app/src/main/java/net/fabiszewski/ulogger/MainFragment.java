@@ -113,8 +113,8 @@ public class MainFragment extends Fragment {
         LinearLayout layoutSummary = layout.findViewById(R.id.layoutSummary);
 
         switchLogger.setOnCheckedChangeListener(this::toggleLogging);
-        buttonWaypoint.setOnClickListener(this::addWaypoint);
-        buttonUpload.setOnClickListener(this::uploadData);
+        // buttonWaypoint.setOnClickListener(this::addWaypoint);
+        // buttonUpload.setOnClickListener(this::uploadData);
         buttonNewTrack.setOnClickListener(this::newTrack);
         buttonShare.setOnClickListener(this::shareURL);
         layoutSummary.setOnClickListener(this::trackSummary);

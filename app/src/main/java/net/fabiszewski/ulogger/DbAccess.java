@@ -272,6 +272,17 @@ class DbAccess implements AutoCloseable {
     }
 
     /**
+     * Mark all positions as synchronized.
+     */
+    public void setAllSynced(Context context) {
+        ContentValues values = new ContentValues();
+        values.put(DbContract.Positions.COLUMN_SYNCED, "1");
+        values.putNull(DbContract.Positions.COLUMN_ERROR);
+        db.update(DbContract.Positions.TABLE_NAME, values, null, null);
+        ImageHelper.clearTrackImages(context);
+    }
+
+    /**
      * Get number of all positions in track
      *
      * @return Count
@@ -596,6 +607,19 @@ class DbAccess implements AutoCloseable {
      */
     private void truncatePositions() {
         db.delete(DbContract.Positions.TABLE_NAME, null, null);
+    }
+
+    /**
+     * Deletes positions older than
+     *
+     * @param time long
+     */
+    public void deletePositionsOlderThan(long time) {
+        db.delete(
+                DbContract.Positions.TABLE_NAME,
+                DbContract.Positions.COLUMN_TIME + "<" + (time / 1000),
+                null
+        );
     }
 
     /**

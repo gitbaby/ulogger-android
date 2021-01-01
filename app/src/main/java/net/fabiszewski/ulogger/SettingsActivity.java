@@ -9,6 +9,8 @@
 
 package net.fabiszewski.ulogger;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +38,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String KEY_LOGGER_RUNNING = "prefLoggerRunning";
     public static final String KEY_ALLOW_EXTERNAL = "prefAllowExternal";
     public static final String KEY_AUTO_NAME = "prefAutoName";
+    public static final String KEY_EXPORT_FILE = "prefExportFile";
+    public static final String KEY_EXPORT_HOURS = "prefExportHours";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

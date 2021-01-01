@@ -1,5 +1,13 @@
 # ![ulogger_logo_small](https://cloud.githubusercontent.com/assets/3366666/24080878/0288f046-0ca8-11e7-9ffd-753e5c417756.png) μlogger [![Build Status](https://travis-ci.com/bfabiszewski/ulogger-android.svg?branch=master)](https://travis-ci.com/bfabiszewski/ulogger-android) [![Coverity Status](https://scan.coverity.com/projects/12109/badge.svg)](https://scan.coverity.com/projects/bfabiszewski-ulogger-android)
 
+μlogger [*micro-logger*] Offline is an android application for continuous logging of location coordinates and writing them in the selected GPX file. Server exporting code was stripped. No Internet access is required.
+
+## New settings
+- GPX file to export (must be selected before starting logging)
+- How many hours to export (12 by default)
+
+## Original description
+
 μlogger [*micro-logger*] is an android application for continuous logging of location coordinates, designed to record hiking, biking tracks and other outdoor activities. 
 Application works in background. Track points are saved automatically at chosen intervals or manually and may be uploaded to dedicated server in real time.
 This client works with [μlogger web server](https://github.com/bfabiszewski/ulogger-server). 

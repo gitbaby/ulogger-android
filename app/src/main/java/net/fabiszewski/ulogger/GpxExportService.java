@@ -21,8 +21,10 @@ import androidx.annotation.NonNull;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 
 /**
  * Export track to GPX format
@@ -92,10 +94,12 @@ public class GpxExportService extends IntentService {
      * @throws IOException Exception
      */
     private void write(@NonNull Uri uri) throws IOException {
-        OutputStream stream = getContentResolver().openOutputStream(uri);
+        FileOutputStream stream = (FileOutputStream) getContentResolver().openOutputStream(uri);
         if (stream == null) {
             throw new IOException(getString(R.string.e_open_out_stream));
         }
+        // Truncate file
+        stream.getChannel().truncate(0);
         try (BufferedOutputStream bufferedStream = new BufferedOutputStream(stream)) {
             serialize(bufferedStream);
             if (Logger.DEBUG) { Log.d(TAG, "[export gpx file written to " + uri); }

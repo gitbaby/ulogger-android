@@ -20,11 +20,13 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -55,7 +57,8 @@ public class LoggerService extends Service {
     public static final String BROADCAST_LOCATION_STOPPED = "net.fabiszewski.ulogger.broadcast.location_stopped";
     public static final String BROADCAST_LOCATION_UPDATED = "net.fabiszewski.ulogger.broadcast.location_updated";
 
-    private Intent syncIntent;
+    private Intent syncIntent = null;
+    private long exportMs = 24L * 3600000L;
     private static volatile boolean isRunning = false;
     private HandlerThread thread;
     private Looper looper;
@@ -94,15 +97,25 @@ public class LoggerService extends Service {
             setRunning(true);
             sendBroadcast(BROADCAST_LOCATION_STARTED);
 
-            syncIntent = new Intent(getApplicationContext(), WebSyncService.class);
+            // syncIntent = new Intent(getApplicationContext(), WebSyncService.class);
+            Context context = getApplicationContext();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            final String exportUri = preferences.getString(SettingsActivity.KEY_EXPORT_FILE, "");
+            if (!TextUtils.isEmpty(exportUri)) {
+                syncIntent = new Intent(context, GpxExportService.class);
+                syncIntent.setData(Uri.parse(exportUri));
+                final String exportHours = preferences.getString(SettingsActivity.KEY_EXPORT_HOURS, "24");
+                exportMs = Long.parseLong(exportHours) * 3600000L;
+            }
 
             // keep database open during whole service runtime
             db = DbAccess.getInstance();
             db.open(this);
 
             // start websync service if needed
-            if (locationHelper.isLiveSync() && DbAccess.needsSync(this)) {
-                startService(syncIntent);
+            // if (locationHelper.isLiveSync() && DbAccess.needsSync(this)) {
+            if (DbAccess.needsSync(this)) {
+                doSync();
             }
         } catch (LocationHelper.LoggerException e) {
             int errorCode = e.getCode();
@@ -111,6 +124,14 @@ public class LoggerService extends Service {
             } else if (errorCode == E_PERMISSION) {
                 sendBroadcast(BROADCAST_LOCATION_PERMISSION_DENIED);
             }
+        }
+    }
+
+    private void doSync() {
+        if (syncIntent != null) {
+            db.deletePositionsOlderThan(System.currentTimeMillis() - exportMs);
+            startService(syncIntent);
+            db.setAllSynced(getApplicationContext());
         }
     }
 
@@ -305,9 +326,9 @@ public class LoggerService extends Service {
                 lastLocation = location;
                 DbAccess.writeLocation(LoggerService.this, location);
                 sendBroadcast(BROADCAST_LOCATION_UPDATED);
-                if (locationHelper.isLiveSync()) {
-                    startService(syncIntent);
-                }
+                // if (locationHelper.isLiveSync()) {
+                doSync();
+                // }
             }
         }
 
